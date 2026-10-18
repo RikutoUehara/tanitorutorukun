@@ -47,6 +47,10 @@ class UITemplateTests(unittest.TestCase):
         return PageParser(response.get_data(as_text=True))
 
     def assert_accessible_shell(self, page):
+        analytics = [attrs for tag, attrs in page.tags if tag == 'script'
+                     and attrs.get('src') == 'https://www.googletagmanager.com/gtag/js?id=G-L3GRT7GG26']
+        self.assertEqual(len(analytics), 1)
+        self.assertIn('async', analytics[0])
         self.assertIn(('html', {'lang': 'ja'}), page.tags)
         self.assertTrue(any(tag == 'meta' and attrs.get('name') == 'viewport'
                             for tag, attrs in page.tags))
